@@ -56,7 +56,7 @@ Card >> deactivate: aCardHandler [
 { #category : #comparing }
 Card >> hash [
 
-	^ holder hash
+	^ holder hash 
 ]
 
 { #category : #accessing }
