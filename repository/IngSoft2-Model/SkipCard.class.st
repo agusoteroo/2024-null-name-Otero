@@ -10,3 +10,9 @@ SkipCard >> activate: aCardHandler withTarget: aTarget [
     aCardHandler skipCurrentShipTurn.
     ^ self
 ]
+
+{ #category : #comparing }
+SkipCard >> canPlayRightNow: theShipInTurn [
+
+	^ true
+]

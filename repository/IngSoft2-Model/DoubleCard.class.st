@@ -9,3 +9,9 @@ DoubleCard >> activate: aCardHandler withTarget: aTarget [
     aCardHandler giveExtraTurnToCurrentShip.
     ^ self
 ]
+
+{ #category : #comparing }
+DoubleCard >> canPlayRightNow: theShipInTurn [
+
+	^ true
+]
