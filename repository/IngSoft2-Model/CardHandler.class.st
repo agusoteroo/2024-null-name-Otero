@@ -72,6 +72,11 @@ CardHandler >> giveCardTo: aShipName [
 	inPlayDeck add: (gameDeck cardAtRandom withHolder: aShipName)
 ]
 
+{ #category : #modifying }
+CardHandler >> giveExtraTurnToCurrentShip [
+    game giveExtraTurnToCurrentShip
+]
+
 { #category : #accessing }
 CardHandler >> inPlayDeck [
 
@@ -137,6 +142,16 @@ CardHandler >> removeCoalitionOf: aLeader and: aMercenary [
 CardHandler >> removeFromActiveCard: aTarget [
 
 	activeCards remove: aTarget
+]
+
+{ #category : #modifying }
+CardHandler >> reverseTurns [
+    game reverseTurns
+]
+
+{ #category : #modifying }
+CardHandler >> skipCurrentShipTurn [
+    game skipTurn
 ]
 
 { #category : #generating }

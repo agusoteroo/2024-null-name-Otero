@@ -127,6 +127,7 @@ Game >> canPlayNextTurnOf [
 
 	self isFinished ifTrue: [
 		Error signal: 'Game is Over you cant Keep Playing' ].
+	theShipInCurrentTurn := gameTurnHandler currentTurnShip.
 ]
 
 { #category : #event }
@@ -134,6 +135,11 @@ Game >> giveCardToCurrentShip: aShip [
 
 	gameCardHandler
 		giveCardTo: aShip shipName.
+]
+
+{ #category : #modifying }
+Game >> giveExtraTurnToCurrentShip [
+    gameTurnHandler  giveExtraTurnToCurrentShip
 ]
 
 { #category : #initialization }
@@ -204,6 +210,11 @@ Game >> playTurn [
 	gameTurnHandler checkForShipsWithNoShield.
 	gameTurnHandler nextTurn.
 	theShipInCurrentTurn := gameTurnHandler currentTurnShip
+]
+
+{ #category : #modifying }
+Game >> reverseTurns [
+    gameTurnHandler  reverseOrder
 ]
 
 { #category : #accessing }
