@@ -59,10 +59,39 @@ CardHandler >> checkTarget: aTarget [
 	^ activeCards anySatisfy: [ :card | aTarget = card ]
 ]
 
+{ #category : #comparing }
+CardHandler >> currentShip [
+    ^ game shipInCurrentTurn
+]
+
+{ #category : #comparing }
+CardHandler >> currentShipName [
+    ^ self currentShip shipName
+]
+
 { #category : #generating }
 CardHandler >> deactivate: aTarget [
 
 	aTarget objective deactivate: self.
+
+]
+
+{ #category : #generating }
+CardHandler >> freeShipInTurn [
+	self freeShipNamed: self currentShipName
+
+
+]
+
+{ #category : #generating }
+CardHandler >> freeShipNamed: aShipName [
+	| ship |
+	ship := game shipNamed: aShipName.
+	ship ifNil: [ ^ self ].
+
+	(game isShipInJail: ship)
+		ifTrue: [ game releaseShipFromJail: ship ].
+
 
 ]
 
