@@ -5,6 +5,50 @@ Class {
 }
 
 { #category : #tests }
+CardsEffectTest >> testFreedomCardReleasesShipFromJailEvenWithNonMaxRoll [
+
+    | aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray
+      collectionOfCards aDeck aTarget |
+
+    aTileArray := OrderedCollection new.
+    20 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray at: 3 put: JailEffect new.
+
+    aBoard := Board
+        withTileEffectCollection: aTileArray
+        withLengthInUnits: (Parsec withNominalValue: 20)
+        withAmountOfLaps: 1.
+
+    aCollectionOfNames := OrderedCollection
+        with: 'Juan'
+        with: 'Pedro'.
+
+    aCollectionOfDie := OrderedCollection with:
+        ( SequenceDie withSequence: #(2 1 ) ).
+
+    collectionOfCards := OrderedCollection new.
+    10 timesRepeat: [ collectionOfCards add: FreedomCard  ].
+    aDeck := LoadedDeck withCards: collectionOfCards.
+
+    aGame := Game
+        withBoard: aBoard
+        withShipNames: aCollectionOfNames
+        withDice: (Dice with: aCollectionOfDie)
+        withDeck: aDeck.
+
+    aTarget := ShipTarget    withObjective: 'Pedro'.
+		
+    aGame playTurn.
+	aGame playTurn.
+		aGame playCard: FreedomCard  by: 'Juan' toTarget: aTarget  .
+    
+    aGame playTurn. 
+
+    self assert: (aGame allShipsPosition at: 'Juan') first equals: 5.
+    self assert: (aGame allShipsPosition at: 'Pedro') first equals: 2.
+]
+
+{ #category : #tests }
 CardsEffectTest >> testWhenApplingRepeatCardLastEffectIsAppliedToTheTargetedShip [
 
 	| aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray collectionOfCards aDeck aTarget |
@@ -272,7 +316,7 @@ CardsEffectTest >> testWhenShipWithMercenariesBattleAllOfThenThrowTheDice [
 	aGame playTurn.
 	aGame playTurn.
 
-	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals: 2
+	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals: 2.
 ]
 
 { #category : #tests }

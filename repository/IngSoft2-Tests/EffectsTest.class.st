@@ -55,6 +55,66 @@ EffectsTest >> testMoonWalkDistanceCannotBeSmallerThanZero [
 ]
 
 { #category : #tests }
+EffectsTest >> testShipInJailDoesNotMoveWithNonMaxRolls [
+
+	| aBoard aShipNames aGame aTileArray |
+
+	aTileArray := OrderedCollection new.
+	10 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray at: 3 put: JailEffect new.
+
+	aBoard := Board
+		          withTileEffectCollection: aTileArray
+		          withLengthInUnits: (Parsec withNominalValue: 10)
+		          withAmountOfLaps: 1.
+
+	aShipNames := OrderedCollection with: 'Juan'.
+	aGame := Game
+		         withBoard: aBoard
+		         withShipNames: aShipNames
+		         withDice: (Dice with:
+				          (OrderedCollection with:
+					           (SequenceDie withSequence: #( 2 2 2) maxFace: 6 ))).
+
+
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 3.
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 3.
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan')first equals: 3
+]
+
+{ #category : #tests }
+EffectsTest >> testShipInJailFreesHimselfWithAMaxRoll [
+
+	| aBoard aShipNames aGame aTileArray |
+
+	aTileArray := OrderedCollection new.
+	10 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray at: 3 put: JailEffect new.
+
+	aBoard := Board
+		          withTileEffectCollection: aTileArray
+		          withLengthInUnits: (Parsec withNominalValue: 10)
+		          withAmountOfLaps: 1.
+
+	aShipNames := OrderedCollection with: 'Juan'.
+	aGame := Game
+		         withBoard: aBoard
+		         withShipNames: aShipNames
+		         withDice: (Dice with:
+				          (OrderedCollection with:
+					           (SequenceDie withSequence: #( 2 6) maxFace: 6 ))).
+
+
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 3.
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 9.
+]
+
+{ #category : #tests }
 EffectsTest >> testWhenApplying2DifferentHyperJumpEffectsShipsMoveTheBiggestAmountOfParsecsInArray [
 
 	| aBoard aShipName aGame aParsecArray aWormHolePair aProbabilityDistributionCollection aTileEffectsCreator |
