@@ -30,6 +30,12 @@ Dice >> inializeWith: aDieCollection [
 ]
 
 { #category : #action }
+Dice >> maxRoll [
+    ^ (dice collect: [ :die | die maxValue ]) sum
+
+]
+
+{ #category : #action }
 Dice >> numberOfDie [
 
 	^ dice size
