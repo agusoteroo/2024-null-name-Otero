@@ -1,12 +1,9 @@
+"
+State pattern used to change the way a ship moves without using ifs and acting as a single class.
+"
 Class {
 	#name : #ShipState,
 	#superclass : #Object,
-	#instVars : [
-		'tileEffectArray',
-		'maxLap',
-		'parsecs',
-		'lightYears'
-	],
 	#category : #'IngSoft2-Model'
 }
 
