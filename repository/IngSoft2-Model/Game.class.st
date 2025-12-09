@@ -127,17 +127,24 @@ Game >> applyLastEffectOn: aTarget [
 { #category : #event }
 Game >> applyMovementEffectsAndBattlesForShip: aShip [
 
+    | postEffectTile |
+
     self adjustShipPosition: aShip.
-    lastEffect := gameBoard
-        effectInPosition: aShip position.
+    lastEffect := gameBoard effectInPosition: aShip position.
 
     gameBoard
         applyTileEffectOn: self
         triggeredBy: aShip.
 
-    shipBattleHandler
-        checkShipBattle: aShip
-        withCardHandler: gameCardHandler.
+    postEffectTile := gameBoard effectInPosition: aShip position.
+
+    (postEffectTile allowsBattles)
+        ifTrue: [
+            shipBattleHandler
+                checkShipBattle: aShip
+                withCardHandler: gameCardHandler
+        ].
+
 ]
 
 { #category : #testing }

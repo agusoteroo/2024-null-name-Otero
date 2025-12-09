@@ -7,6 +7,12 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
+{ #category : #generators }
+Effect >> allowsBattles [
+    ^ true
+
+]
+
 { #category : #applying }
 Effect >> applyOn: aGame activatedBy: aShip [
 
