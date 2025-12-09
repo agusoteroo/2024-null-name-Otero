@@ -40,13 +40,25 @@ GameTest >> testAGameCanShowTheCurrentRanking [
 	aGame playTurn.
 	aGame playTurn.
 	aGame playTurn.
+	aGame playTurn. 
 	aGame playTurn.
-	aGame playTurn.
-	aGame playTurn.
+	aGame playTurn .
+	
+	self
+		assert: (aGame allShipsPosition at: 'Juan')
+		equals: #( 1 1 ) asOrderedCollection.
+			self
+		assert: (aGame allShipsPosition at: 'Pedro')
+		 equals: #( 7 2 ) asOrderedCollection.
+			self
+		assert: (aGame allShipsPosition at: 'Fran')
+		equals: #( 3 1 ) asOrderedCollection.
+		
+		self assert: (aGame shipRankings at: 1) shipName equals: 'Pedro'.
+		self assert: (aGame shipRankings at: 2) shipName equals: 'Fran'. 
+		self assert: (aGame shipRankings at: 3) shipName equals: 'Juan'
 
-	self assert: (aGame shipRankings at: 1) shipName equals: 'Pedro'.
-	self assert: (aGame shipRankings at: 2) shipName equals: 'Juan'.
-	self assert: (aGame shipRankings at: 3) shipName equals: 'Fran'
+
 ]
 
 { #category : #tests }

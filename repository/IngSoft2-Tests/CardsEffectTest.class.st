@@ -5,47 +5,58 @@ Class {
 }
 
 { #category : #tests }
-CardsEffectTest >> testFreedomCardReleasesShipFromJailEvenWithNonMaxRoll [
+CardsEffectTest >> testFreedomCardOnlyReleasesOwnerShipNotOtherShips [
 
-    | aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray
-      collectionOfCards aDeck aTarget |
+	| aBoard aDeck aShipNames aGame aTileArray collectionOfCards aTarget result|
 
-    aTileArray := OrderedCollection new.
-    20 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray := OrderedCollection new.
+	10 timesRepeat: [ aTileArray add: NullEffect new ].
 	aTileArray at: 3 put: JailEffect new.
 
-    aBoard := Board
-        withTileEffectCollection: aTileArray
-        withLengthInUnits: (Parsec withNominalValue: 20)
-        withAmountOfLaps: 1.
 
-    aCollectionOfNames := OrderedCollection
-        with: 'Juan'
-        with: 'Pedro'.
+	aBoard := Board
+		withTileEffectCollection: aTileArray
+		withLengthInUnits: (Parsec withNominalValue: 10)
+		withAmountOfLaps: 1.
 
-    aCollectionOfDie := OrderedCollection with:
-        ( SequenceDie withSequence: #(2 1 ) ).
+	aShipNames := OrderedCollection with: 'Juan' with: 'Pedro'.
+		collectionOfCards := OrderedCollection new.
+	10 timesRepeat: [ collectionOfCards add: FreedomCard  ].
+	aDeck := LoadedDeck withCards: collectionOfCards.
 
-    collectionOfCards := OrderedCollection new.
-    10 timesRepeat: [ collectionOfCards add: FreedomCard  ].
-    aDeck := LoadedDeck withCards: collectionOfCards.
+	aGame := Game
+		withBoard: aBoard
+		withShipNames: aShipNames
+		withDice: (Dice with:
+			(OrderedCollection with:
+				(SequenceDie
+					withSequence: #( 2 3 2 3 )
+					maxFace: 6 )))
 
-    aGame := Game
-        withBoard: aBoard
-        withShipNames: aCollectionOfNames
-        withDice: (Dice with: aCollectionOfDie)
-        withDeck: aDeck.
+		withDeck: aDeck.
 
-    aTarget := ShipTarget    withObjective: 'Pedro'.
-		
-    aGame playTurn.
+
+
 	aGame playTurn.
-		aGame playCard: FreedomCard  by: 'Juan' toTarget: aTarget  .
-    
-    aGame playTurn. 
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 3.
 
-    self assert: (aGame allShipsPosition at: 'Juan') first equals: 5.
-    self assert: (aGame allShipsPosition at: 'Pedro') first equals: 2.
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Pedro') first equals: 4.
+
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 3.
+	
+	aTarget := ShipTarget withObjective: 'Juan'.
+	aGame playCard: FreedomCard by: 'Juan' toTarget: aTarget.
+	result := aGame playCard: FreedomCard by: 'Juan' toTarget: aTarget.
+	self assert: result equals: 'Solo podes usar Freedom sobre una nave en la carcel.'.
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Pedro') first equals: 7.
+	aGame playTurn.
+		self assert: (aGame allShipsPosition at: 'Juan') first equals: 5.
+	
+	
+
 ]
 
 { #category : #tests }
