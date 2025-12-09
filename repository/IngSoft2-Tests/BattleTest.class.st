@@ -10,7 +10,7 @@ BattleTest >> testShipsCanBattleInAHyperGravityEffectTile [
 	| aGame aCollectionOfNames aCollectionOfDie aTileArray |
 	aCollectionOfNames := OrderedCollection with: 'Juan' with: 'Pedro'.
 	aCollectionOfDie := OrderedCollection with:
-		                    (SequenceDie withSequence: #( 3 3 5 4 6) maxFace:12).
+		                    (SequenceDie withSequence: #( 3 3 5 4 6 1 1) maxFace:12).
 
 
 	aTileArray := OrderedCollection new.
@@ -29,10 +29,11 @@ BattleTest >> testShipsCanBattleInAHyperGravityEffectTile [
 	aGame playTurn.
 	aGame playTurn.
 	aGame playTurn .
+	aGame playTurn.
+	aGame playTurn .
 	
 	self assert: (aGame allShipsPosition at: 'Pedro') first equals: 4.
-	self assert: (aGame allShipsPosition at: 'Juan') first equals:7.
-
+	self assert: (aGame allShipsPosition at: 'Juan') first equals:8.
 	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals:3.
 	self assert: (aGame allShipAmountOfShields at: 'Juan') equals:2
 	

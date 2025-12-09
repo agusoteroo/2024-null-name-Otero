@@ -277,6 +277,11 @@ Game >> releaseShipFromJailNamed: aName [
     self releaseShipFromJail: ship.
 ]
 
+{ #category : #initialization }
+Game >> restartShipState: aShip [
+	shipStates at: aShip put: FreeShipState new.
+]
+
 { #category : #modifying }
 Game >> reverseTurns [
     gameTurnHandler  reverseOrder
@@ -352,6 +357,7 @@ Game >> skipTurn [
 
 { #category : #initialization }
 Game >> stateOfShip: aShip [
+	aShip position = 1 ifTrue: [self restartShipState: aShip  ].
     ^ shipStates at: aShip
 ]
 
