@@ -9,7 +9,9 @@ Class {
 		'ships',
 		'currentTurnShip',
 		'shipLostTurns',
-		'lostTurnPenalty'
+		'lostTurnPenalty',
+		'direction',
+		'extraTurns'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -34,6 +36,15 @@ TurnHandler >> currentTurnShip [
 	^ currentTurnShip
 ]
 
+{ #category : #modifying }
+TurnHandler >> giveExtraTurnToCurrentShip [
+    | currentExtra |
+    currentExtra := extraTurns
+        at: currentTurnShip
+        ifAbsent: [ 0 ].
+    extraTurns at: currentTurnShip put: currentExtra + 1
+]
+
 { #category : #testing }
 TurnHandler >> initializeWithShips: aCollectionOfShips [
 
@@ -42,18 +53,44 @@ TurnHandler >> initializeWithShips: aCollectionOfShips [
 	ships := aCollectionOfShips.
 	lostTurnPenalty := 2.
 	shipLostTurns := Dictionary new.
-	ships do: [ :ship | shipLostTurns at: ship put: 0 ]
+	ships do: [ :ship | shipLostTurns at: ship put: 0 ].
+	direction:=1.
+	extraTurns := Dictionary new.
+
+]
+
+{ #category : #modifying }
+TurnHandler >> nextShipAccordingToDirection [ 
+	|index nextIndex|
+	index := ships indexOf: currentTurnShip .
+	nextIndex := index +direction .
+	nextIndex > turnsPerRound ifTrue: [ nextIndex := 1 ].
+   nextIndex < 1 ifTrue: [ nextIndex := turnsPerRound ].
+
+   ^ ships at: nextIndex
 ]
 
 { #category : #modifying }
 TurnHandler >> nextTurn [
 
-	| turnNumber |
-	turnNumber := ships indexOf: currentTurnShip.
-	currentTurnShip := turnNumber < turnsPerRound
-		                   ifTrue: [ ships at: turnNumber + 1 ]
-		                   ifFalse: [ ships at: 1 ].
-	^ currentTurnShip
+    | remainingExtraTurns |
+    remainingExtraTurns := extraTurns
+        at: currentTurnShip
+        ifAbsent: [ 0 ].
+    remainingExtraTurns > 0
+        ifTrue: [
+            extraTurns at: currentTurnShip put: remainingExtraTurns - 1.
+            ^ currentTurnShip 
+        ].
+    currentTurnShip := self nextShipAccordingToDirection.
+    ^ currentTurnShip
+
+]
+
+{ #category : #modifying }
+TurnHandler >> reverseOrder [
+    direction := direction * -1
+
 ]
 
 { #category : #accessing }

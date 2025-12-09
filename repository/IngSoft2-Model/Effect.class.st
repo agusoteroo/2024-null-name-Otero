@@ -18,3 +18,13 @@ Effect >> generateParameters: aTileEffectCreator [
 
 	^ self
 ]
+
+{ #category : #generators }
+Effect >> handlePostMovementFor: aShip
+    inGame: aGame
+    withCardHandler: aCardHandler
+    andBattleHandler: aBattleHandler [
+    aBattleHandler
+        checkShipBattle: aShip
+        withCardHandler: aCardHandler.
+]

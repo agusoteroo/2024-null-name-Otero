@@ -59,6 +59,16 @@ CardHandler >> checkTarget: aTarget [
 	^ activeCards anySatisfy: [ :card | aTarget = card ]
 ]
 
+{ #category : #comparing }
+CardHandler >> currentShip [
+    ^ game shipInCurrentTurn
+]
+
+{ #category : #comparing }
+CardHandler >> currentShipName [
+    ^ self currentShip shipName
+]
+
 { #category : #generating }
 CardHandler >> deactivate: aTarget [
 
@@ -66,10 +76,42 @@ CardHandler >> deactivate: aTarget [
 
 ]
 
+{ #category : #generating }
+CardHandler >> freeShipInTurn [
+	self freeShipNamed: self currentShipName
+
+
+]
+
+{ #category : #generating }
+CardHandler >> freeShipNamed: aShipName [
+    | ship |
+    ship := game shipNamed: aShipName.
+    ship ifNil: [ ^ false ].
+
+    (game isShipInJail: ship)
+        ifTrue: [
+            game releaseShipFromJail: ship.
+            ^ true ].
+
+    ^ false
+
+]
+
+{ #category : #generating }
+CardHandler >> game [
+    ^ game
+]
+
 { #category : #modifying }
 CardHandler >> giveCardTo: aShipName [
 
 	inPlayDeck add: (gameDeck cardAtRandom withHolder: aShipName)
+]
+
+{ #category : #modifying }
+CardHandler >> giveExtraTurnToCurrentShip [
+    game giveExtraTurnToCurrentShip
 ]
 
 { #category : #accessing }
@@ -137,6 +179,16 @@ CardHandler >> removeCoalitionOf: aLeader and: aMercenary [
 CardHandler >> removeFromActiveCard: aTarget [
 
 	activeCards remove: aTarget
+]
+
+{ #category : #modifying }
+CardHandler >> reverseTurns [
+    game reverseTurns
+]
+
+{ #category : #modifying }
+CardHandler >> skipCurrentShipTurn [
+    game skipTurn
 ]
 
 { #category : #generating }

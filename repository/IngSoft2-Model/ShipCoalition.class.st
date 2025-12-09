@@ -1,3 +1,6 @@
+"
+Class for ShipCoallition
+"
 Class {
 	#name : #ShipCoalition,
 	#superclass : #Object,

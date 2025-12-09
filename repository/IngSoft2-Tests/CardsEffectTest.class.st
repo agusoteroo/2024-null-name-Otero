@@ -5,6 +5,98 @@ Class {
 }
 
 { #category : #tests }
+CardsEffectTest >> testFreedomCardOnlyReleasesOwnerShipNotOtherShips [
+
+	| aBoard aDeck aShipNames aGame aTileArray collectionOfCards aTarget result|
+
+	aTileArray := OrderedCollection new.
+	10 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray at: 3 put: JailEffect new.
+
+
+	aBoard := Board
+		withTileEffectCollection: aTileArray
+		withLengthInUnits: (Parsec withNominalValue: 10)
+		withAmountOfLaps: 1.
+
+	aShipNames := OrderedCollection with: 'Juan' with: 'Pedro'.
+		collectionOfCards := OrderedCollection new.
+	10 timesRepeat: [ collectionOfCards add: FreedomCard  ].
+	aDeck := LoadedDeck withCards: collectionOfCards.
+
+	aGame := Game
+		withBoard: aBoard
+		withShipNames: aShipNames
+		withDice: (Dice with:
+			(OrderedCollection with:
+				(SequenceDie
+					withSequence: #( 2 3 2 3 )
+					maxFace: 6 )))
+
+		withDeck: aDeck.
+
+
+
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 3.
+
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Pedro') first equals: 4.
+
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 3.
+	
+	aTarget := ShipTarget withObjective: 'Juan'.
+	aGame playCard: FreedomCard by: 'Juan' toTarget: aTarget.
+	result := aGame playCard: FreedomCard by: 'Juan' toTarget: aTarget.
+	self assert: result equals: 'Solo podes usar Freedom sobre una nave en la carcel.'.
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Pedro') first equals: 7.
+	aGame playTurn.
+		self assert: (aGame allShipsPosition at: 'Juan') first equals: 5.
+	
+	
+
+]
+
+{ #category : #tests }
+CardsEffectTest >> testShipInJailFreesHimselfWithFreedomCardEvenWithNonMaxRoll [
+
+	| aBoard aShipNames aGame aTileArray aDeck collectionOfCards aTarget |
+
+	aTileArray := OrderedCollection new.
+	10 timesRepeat: [ aTileArray add: NullEffect new ].
+
+
+	aBoard := Board
+		withTileEffectCollection: aTileArray
+		withLengthInUnits: (Parsec withNominalValue: 10)
+		withAmountOfLaps: 1.
+
+	aShipNames := OrderedCollection with: 'Juan'.
+	collectionOfCards := OrderedCollection new.
+	10 timesRepeat: [ collectionOfCards add: FreedomCard  ].
+	aDeck := LoadedDeck withCards: collectionOfCards.
+	aGame := Game
+		withBoard: aBoard
+		withShipNames: aShipNames
+		withDice: (Dice with:
+			(OrderedCollection with:
+				(SequenceDie withSequence: #( 2 3 ) maxFace: 6 )))
+		withDeck: aDeck .
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 3.
+
+	aTarget := ShipTarget withObjective: 'Juan'.
+	aGame playCard: FreedomCard by: 'Juan' toTarget: aTarget.
+
+	aGame playTurn.
+
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 6.
+
+]
+
+{ #category : #tests }
 CardsEffectTest >> testWhenApplingRepeatCardLastEffectIsAppliedToTheTargetedShip [
 
 	| aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray collectionOfCards aDeck aTarget |
@@ -38,6 +130,48 @@ CardsEffectTest >> testWhenApplingRepeatCardLastEffectIsAppliedToTheTargetedShip
 	aGame playCard: RepeatCard by: 'Jose' toTarget: aTarget.
 	
 	self assert: (aGame allShipsPosition at: 'Juan') equals: #(2 1) asOrderedCollection 
+]
+
+{ #category : #tests }
+CardsEffectTest >> testWhenDoubleCardIsPlayedCurrentShipPlaysTwoConsecutiveTurns [
+
+    | aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray
+      collectionOfCards aDeck aTarget |
+
+    aTileArray := OrderedCollection new.
+    20 timesRepeat: [ aTileArray add: NullEffect new ].
+
+    aBoard := Board
+        withTileEffectCollection: aTileArray
+        withLengthInUnits: (Parsec withNominalValue: 20)
+        withAmountOfLaps: 1.
+
+    aCollectionOfNames := OrderedCollection
+        with: 'Juan'
+        with: 'Pedro'.
+
+    aCollectionOfDie := OrderedCollection with:
+        ( SequenceDie withSequence: #(1 2) ).
+
+    collectionOfCards := OrderedCollection new.
+    10 timesRepeat: [ collectionOfCards add: DoubleCard ].
+    aDeck := LoadedDeck withCards: collectionOfCards.
+
+    aGame := Game
+        withBoard: aBoard
+        withShipNames: aCollectionOfNames
+        withDice: (Dice with: aCollectionOfDie)
+        withDeck: aDeck.
+
+    aTarget := AllShipsTarget new.
+		
+    aGame playTurn.
+	aGame playCard: DoubleCard by: 'Pedro' toTarget: aTarget.
+    aGame playTurn.
+    aGame playTurn. 
+
+    self assert: (aGame allShipsPosition at: 'Juan') first equals: 2.
+    self assert: (aGame allShipsPosition at: 'Pedro') first equals: 4.
 ]
 
 { #category : #tests }
@@ -148,6 +282,52 @@ CardsEffectTest >> testWhenOneSpeedCardIsPlayedWhenShipBattelsItThrowResultIsInc
 ]
 
 { #category : #tests }
+CardsEffectTest >> testWhenReverseTurnsCardIsPlayedTurnOrderIsReversed [ 
+
+
+    | aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray collectionOfCards aDeck aTarget |
+
+    "Tablero simple sin efectos"
+    aTileArray := OrderedCollection new.
+    20 timesRepeat: [ aTileArray add: NullEffect new ].
+
+    aBoard := Board
+        withTileEffectCollection: aTileArray
+        withLengthInUnits: (Parsec withNominalValue: 20)
+        withAmountOfLaps: 1.
+    collectionOfCards := OrderedCollection new.
+    10 timesRepeat: [ collectionOfCards add: ReverseTurnsCard  ].
+    aDeck := LoadedDeck withCards: collectionOfCards.
+    aCollectionOfNames := OrderedCollection
+        with: 'Juan'
+        with: 'Pedro'
+        with: 'Paco'.
+
+    aCollectionOfDie := OrderedCollection with: (SequenceDie withSequence: #(1 2 3 4)).
+
+    aGame :=
+        Game
+            withBoard: aBoard
+            withShipNames: aCollectionOfNames
+            withDice: (Dice with: aCollectionOfDie)
+				withDeck: aDeck .
+
+	aTarget := AllShipsTarget new.
+   
+    aGame playTurn.   
+    aGame playTurn.   
+	aGame playCard: ReverseTurnsCard  by: 'Juan' toTarget: aTarget.
+    aGame playTurn.  
+	 aGame playTurn. 
+
+    self assert: (aGame allShipsPosition at: 'Juan')  first equals: 2.
+    self assert: (aGame allShipsPosition at: 'Pedro') first equals: 7.
+	self assert: (aGame allShipsPosition at:  'Paco')  first equals: 4
+
+
+]
+
+{ #category : #tests }
 CardsEffectTest >> testWhenShipWithMercenariesBattleAllOfThenThrowTheDice [
 
 	| aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray collectionOfCards aDeck aTarget |
@@ -184,5 +364,47 @@ CardsEffectTest >> testWhenShipWithMercenariesBattleAllOfThenThrowTheDice [
 	aGame playTurn.
 	aGame playTurn.
 
-	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals: 2
+	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals: 2.
+]
+
+{ #category : #tests }
+CardsEffectTest >> testWhenSkipCardIsPlayedCurrentShipDoesNotMoveInNextTurn [
+
+    | aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray
+      collectionOfCards aDeck aTarget |
+
+    aTileArray := OrderedCollection new.
+    20 timesRepeat: [ aTileArray add: NullEffect new ].
+
+    aBoard := Board
+        withTileEffectCollection: aTileArray
+        withLengthInUnits: (Parsec withNominalValue: 20)
+        withAmountOfLaps: 1.
+
+    aCollectionOfNames := OrderedCollection
+        with: 'Juan'
+        with: 'Pedro'.
+
+    aCollectionOfDie := OrderedCollection with:
+        (LoadedDie of: 5).
+
+    collectionOfCards := OrderedCollection new.
+    10 timesRepeat: [ collectionOfCards add: SkipCard ].
+    aDeck := LoadedDeck withCards: collectionOfCards.
+
+    aGame := Game
+        withBoard: aBoard
+        withShipNames: aCollectionOfNames
+        withDice: (Dice with: aCollectionOfDie)
+        withDeck: aDeck.
+
+    aTarget := AllShipsTarget new. 
+
+ 
+    aGame playCard: SkipCard by: 'Juan' toTarget: aTarget.
+
+    aGame playTurn.
+
+    self assert: (aGame allShipsPosition at: 'Juan') first equals: 1.
+    self assert: (aGame allShipsPosition at: 'Pedro') first equals: 6.
 ]

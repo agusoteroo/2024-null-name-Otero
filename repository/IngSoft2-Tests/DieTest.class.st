@@ -63,6 +63,40 @@ DieTest >> testDieCannotBeCreatedWithLessThanThreeFaces [
 ]
 
 { #category : #asserting }
+DieTest >> testHyperGravityCannotHaveRequiredRollGreaterThanMaxDiceRoll [
+
+    | aBoard aShipNames aGame aTileArray hyperEffect |
+
+    aTileArray := OrderedCollection new.
+    10 timesRepeat: [ aTileArray add: NullEffect new ].
+
+    hyperEffect := HyperGravityEffect withRequiredRoll: 8.
+    aTileArray at: 4 put: hyperEffect.
+
+    aBoard := Board
+        withTileEffectCollection: aTileArray
+        withLengthInUnits: (Parsec withNominalValue: 10)
+        withAmountOfLaps: 1.
+
+    aShipNames := OrderedCollection with: 'Juan'.
+
+    aGame := Game
+        withBoard: aBoard
+        withShipNames: aShipNames
+        withDice: (Dice with:
+            (OrderedCollection with:
+                (SequenceDie
+                    withSequence: #( 3 )
+                    maxFace: 6 ))).
+
+
+    self
+        should: [ aGame playTurn ]
+        raise: HyperGravityException.
+
+]
+
+{ #category : #asserting }
 DieTest >> testWhenDieIsThrownThenValueIsBetweenOneAndNumberedFaces [
 
 	| aDie |

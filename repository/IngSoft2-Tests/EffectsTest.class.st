@@ -47,11 +47,162 @@ EffectsTest >> testBlackHoleEffectCannotBeAplliedAfterGameIsFinished [
 ]
 
 { #category : #tests }
+EffectsTest >> testDifferentTilesCanHaveDifferentRequiredRolls [
+
+    | aBoard aShipNames aGame aTileArray  |
+
+    aTileArray := OrderedCollection new.
+    10 timesRepeat: [ aTileArray add: NullEffect new ].
+    
+    aTileArray at: 4 put: (HyperGravityEffect withRequiredRoll: 5).
+	 aTileArray at: 9 put: (HyperGravityEffect withRequiredRoll: 6).
+    aBoard := Board
+        withTileEffectCollection: aTileArray
+        withLengthInUnits: (Parsec withNominalValue: 20)
+        withAmountOfLaps: 1.
+
+    aShipNames := OrderedCollection with: 'Juan'.
+
+    aGame := Game
+        withBoard: aBoard
+        withShipNames: aShipNames
+        withDice: (Dice with:
+            (OrderedCollection with:
+                (SequenceDie
+                    withSequence: #( 3 4 5 )
+                    maxFace: 6 ))).
+
+        aGame playTurn.
+    self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+
+	 aGame playTurn.
+    self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+
+    aGame playTurn.
+    self assert: (aGame allShipsPosition at: 'Juan') first equals: 9.
+	 aGame playTurn .
+	 aGame playTurn .
+	 aGame playTurn .
+	 aGame playTurn .
+	 aGame playTurn .
+	 aGame playTurn .
+	 self assert: (aGame allShipsPosition at: 'Juan') first equals: 9.
+	
+]
+
+{ #category : #tests }
 EffectsTest >> testMoonWalkDistanceCannotBeSmallerThanZero [
 	
 	self should: [ MoonWalkEffect withMoonwalkDistance: -3 ] raise: Error withMessage: 'Moonwalk distance must be strictly positive'
 	
 	
+]
+
+{ #category : #tests }
+EffectsTest >> testShipInHyperGravityStaysUntilReachingRequiredRoll [
+
+    | aBoard aShipNames aGame aTileArray  |
+
+    aTileArray := OrderedCollection new.
+    10 timesRepeat: [ aTileArray add: NullEffect new ].
+    
+    aTileArray at: 4 put: (HyperGravityEffect withRequiredRoll: 5).
+
+    aBoard := Board
+        withTileEffectCollection: aTileArray
+        withLengthInUnits: (Parsec withNominalValue: 20)
+        withAmountOfLaps: 1.
+
+    aShipNames := OrderedCollection with: 'Juan'.
+
+    aGame := Game
+        withBoard: aBoard
+        withShipNames: aShipNames
+        withDice: (Dice with:
+            (OrderedCollection with:
+                (SequenceDie
+                    withSequence: #( 3 4 5 )
+                    maxFace: 6 ))).
+
+        aGame playTurn.
+    self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+
+	 aGame playTurn.
+    self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+
+    aGame playTurn.
+    self assert: (aGame allShipsPosition at: 'Juan') first equals: 9.
+
+]
+
+{ #category : #tests }
+EffectsTest >> testShipInJailDoesNotMoveWithNonMaxRolls [
+
+	| aBoard aShipNames aGame aTileArray |
+
+	aTileArray := OrderedCollection new.
+	10 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray at: 3 put: JailEffect new.
+
+	aBoard := Board
+		          withTileEffectCollection: aTileArray
+		          withLengthInUnits: (Parsec withNominalValue: 10)
+		          withAmountOfLaps: 1.
+
+	aShipNames := OrderedCollection with: 'Juan'.
+	aGame := Game
+		         withBoard: aBoard
+		         withShipNames: aShipNames
+		         withDice: (Dice with:
+				          (OrderedCollection with:
+					           (SequenceDie
+						            withSequence: #( 2 2 2 )
+						            maxFace: 6 ))).
+
+
+	aGame playTurn.
+	self
+		assert: (aGame allShipsPosition at: 'Juan')
+		equals: #( 3 1 ) asOrderedCollection.
+
+	aGame playTurn.
+	self
+		assert: (aGame allShipsPosition at: 'Juan')
+		equals: #( 3 1 ) asOrderedCollection.
+		aGame playTurn.
+	self
+		assert: (aGame allShipsPosition at: 'Juan')
+		equals: #( 3 1 ) asOrderedCollection
+
+]
+
+{ #category : #tests }
+EffectsTest >> testShipInJailFreesHimselfWithAMaxRoll [
+
+	| aBoard aShipNames aGame aTileArray |
+
+	aTileArray := OrderedCollection new.
+	10 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray at: 3 put: JailEffect new.
+
+	aBoard := Board
+		          withTileEffectCollection: aTileArray
+		          withLengthInUnits: (Parsec withNominalValue: 10)
+		          withAmountOfLaps: 1.
+
+	aShipNames := OrderedCollection with: 'Juan'.
+	aGame := Game
+		         withBoard: aBoard
+		         withShipNames: aShipNames
+		         withDice: (Dice with:
+				          (OrderedCollection with:
+					           (SequenceDie withSequence: #( 2 6) maxFace: 6 ))).
+
+
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 3.
+	aGame playTurn.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 9.
 ]
 
 { #category : #tests }

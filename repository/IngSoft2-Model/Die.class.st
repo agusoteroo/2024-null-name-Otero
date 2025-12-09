@@ -31,6 +31,12 @@ Die >> initializeOf: anAmountOfFaces [
 ]
 
 { #category : #initialization }
+Die >> maxValue [
+    ^ faces
+
+]
+
+{ #category : #initialization }
 Die >> throw [
 
 	^ faces atRandom

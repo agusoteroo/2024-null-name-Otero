@@ -30,3 +30,8 @@ Target >> objective [
 
 	^ objective
 ]
+
+{ #category : #testing }
+Target >> shipInGame: aGame [
+    ^ aGame shipNamed: objective
+]

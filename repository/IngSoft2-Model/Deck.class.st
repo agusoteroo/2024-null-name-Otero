@@ -44,6 +44,6 @@ Deck >> initalizeWithCards: aCollectionOfProbabilities [
 
 	probabilityCards := probabilityManager
 		                    transformIntoProbabilityRanges:
-		                    aCollectionOfProbabilities. 
+		                    aCollectionOfProbabilities.
 
 ]
