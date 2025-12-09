@@ -1,3 +1,6 @@
+"
+Class for HypeGravityEffect
+"
 Class {
 	#name : #HyperGravityEffect,
 	#superclass : #EffectOnOneShip,

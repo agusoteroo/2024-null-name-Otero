@@ -1,3 +1,6 @@
+"
+Describes the way the ship was used to move.
+"
 Class {
 	#name : #FreeShipState,
 	#superclass : #ShipState,

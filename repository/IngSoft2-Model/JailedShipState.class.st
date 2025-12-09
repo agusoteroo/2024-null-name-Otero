@@ -1,3 +1,6 @@
+"
+Class to describe the movements and behaviour in JT
+"
 Class {
 	#name : #JailedShipState,
 	#superclass : #ShipState,

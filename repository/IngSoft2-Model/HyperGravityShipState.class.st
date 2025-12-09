@@ -1,3 +1,6 @@
+"
+Class to describe the movements and behaviour in HGT
+"
 Class {
 	#name : #HyperGravityShipState,
 	#superclass : #ShipState,

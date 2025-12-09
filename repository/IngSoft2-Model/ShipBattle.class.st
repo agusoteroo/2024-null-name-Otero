@@ -50,32 +50,26 @@ ShipBattle >> resolveBattleBetween: aShip and: anotherShip with: aCardHandler [
 
 	| aShipDiceRoll anotherShipDiceRoll loserShipArmy aShipArmy anotherShipArmy |
 
-	"Armo los ejércitos a partir de los nombres devueltos por el cardHandler"
 	aShipArmy := self shipsNames: (aCardHandler mercenariesOf: aShip).
 	anotherShipArmy := self shipsNames: (aCardHandler mercenariesOf: anotherShip).
 
 	aShipDiceRoll := 0.
 	anotherShipDiceRoll := 0.
 
-	"Sumo tiradas del ejército de aShip"
 	aShipArmy do: [ :aShipInArmy |
 		| cardMovement |
 		cardMovement := aCardHandler movementCardsActivated: aShipInArmy.
 		aShipDiceRoll := aShipDiceRoll + dice throw + cardMovement ].
 
-	"Sumo tiradas del ejército de anotherShip"
 	anotherShipArmy do: [ :anotherShipInArmy |
 		| cardMovement |
 		cardMovement := aCardHandler movementCardsActivated: anotherShipInArmy.
 		anotherShipDiceRoll := anotherShipDiceRoll + dice throw + cardMovement ].
 
-	"IMPORTANTE: mantenemos la misma regla original de desempate:
-	 si hay empate, pierde aShipArmy"
 	loserShipArmy := aShipDiceRoll > anotherShipDiceRoll
 		ifTrue: [ anotherShipArmy ]
 		ifFalse: [ aShipArmy ].
 
-	"Castigo a todos los barcos del ejército perdedor"
 	loserShipArmy do: [ :aShipInArmy |
 		aShipInArmy loseOneShield.
 		aShipInArmy moveToFirstTile ].

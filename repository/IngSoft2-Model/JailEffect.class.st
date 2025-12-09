@@ -1,3 +1,6 @@
+"
+Class for JailEffect
+"
 Class {
 	#name : #JailEffect,
 	#superclass : #EffectOnOneShip,
@@ -10,7 +13,7 @@ JailEffect >> affectAShip: aShip [
 	^ self 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #applying }
 JailEffect >> affectShip: aShip inGame: aGame [
     aGame sendShipToJail: aShip.
 
