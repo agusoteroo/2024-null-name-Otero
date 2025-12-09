@@ -21,6 +21,10 @@ JailEffect >> affectShip: aShip inGame: aGame [
 ]
 
 { #category : #generators }
-JailEffect >> allowsBattles [
-    ^ false
+JailEffect >> handlePostMovementFor: aShip
+    inGame: aGame
+    withCardHandler: aCardHandler
+    andBattleHandler: aBattleHandler [
+
+
 ]

@@ -138,12 +138,11 @@ Game >> applyMovementEffectsAndBattlesForShip: aShip [
 
     postEffectTile := gameBoard effectInPosition: aShip position.
 
-    (postEffectTile allowsBattles)
-        ifTrue: [
-            shipBattleHandler
-                checkShipBattle: aShip
-                withCardHandler: gameCardHandler
-        ].
+    postEffectTile
+        handlePostMovementFor: aShip
+        inGame: self
+        withCardHandler: gameCardHandler
+        andBattleHandler: shipBattleHandler.
 
 ]
 
