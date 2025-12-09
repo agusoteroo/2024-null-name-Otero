@@ -5,6 +5,74 @@ Class {
 }
 
 { #category : #tests }
+BattleTest >> testShipsCanNotBattleInAJailEffect [
+
+	| aGame aCollectionOfNames aCollectionOfDie aTileArray |
+	aCollectionOfNames := OrderedCollection with: 'Juan' with: 'Pedro'.
+	aCollectionOfDie := OrderedCollection with:
+		                    (SequenceDie withSequence: #( 3 3 5 4 6) maxFace:12).
+
+
+	aTileArray := OrderedCollection new.
+	16 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray at: 4 put: JailEffect new .
+
+	
+	aGame := Game
+		         withBoard: (Board
+				          withTileEffectCollection: aTileArray
+				          withLengthInUnits: (Parsec withNominalValue: 16)
+				          withAmountOfLaps: 1)
+		         withShipNames: aCollectionOfNames
+		         withDice: (Dice with: aCollectionOfDie).
+
+	aGame playTurn.
+	aGame playTurn.
+
+	self assert: (aGame allShipsPosition at: 'Pedro')
+		equals: #( 4 1 ) asOrderedCollection.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals:3.
+	self assert: (aGame allShipAmountOfShields at: 'Juan') equals:3
+	
+	
+]
+
+{ #category : #tests }
+BattleTest >> testShipsCanNotBattleInAJailEffectEvenAfterLandingDueToAnotherEffect [
+
+	| aGame aCollectionOfNames aCollectionOfDie aTileArray |
+	aCollectionOfNames := OrderedCollection with: 'Juan' with: 'Pedro'.
+	aCollectionOfDie := OrderedCollection with:
+		                    (SequenceDie withSequence: #( 3 7 5 4 6) maxFace:12).
+
+
+	aTileArray := OrderedCollection new.
+	16 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray at: 4 put: JailEffect new .
+	aTileArray at: 8 put: BlackHoleEffect new.
+	
+	aGame := Game
+		         withBoard: (Board
+				          withTileEffectCollection: aTileArray
+				          withLengthInUnits: (Parsec withNominalValue: 16)
+				          withAmountOfLaps: 1)
+		         withShipNames: aCollectionOfNames
+		         withDice: (Dice with: aCollectionOfDie).
+
+	aGame playTurn.
+	aGame playTurn.
+
+	self assert: (aGame allShipsPosition at: 'Pedro')
+		equals: #( 4 1 ) asOrderedCollection.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals:3.
+	self assert: (aGame allShipAmountOfShields at: 'Juan') equals:3
+	
+	
+]
+
+{ #category : #tests }
 BattleTest >> testShipsCannotBattleInTheFirstTileOfABoard [
 
 	| aGame aCollectionOfNames aWormHoleTilePair aCollectionOfDie aTileArray aParsecAmount |
@@ -30,39 +98,6 @@ BattleTest >> testShipsCannotBattleInTheFirstTileOfABoard [
 
 	self assert: (aGame allShipAmountOfShields at: 'Juan') equals: 3.
 	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals: 3
-]
-
-{ #category : #tests }
-BattleTest >> testWhenAShipBattlesWhenJailedTheBattleBehavesTheSame [
-
-	| aGame aCollectionOfNames aCollectionOfDie aTileArray |
-	aCollectionOfNames := OrderedCollection with: 'Juan' with: 'Pedro'.
-	aCollectionOfDie := OrderedCollection with:
-		                    (SequenceDie withSequence: #( 3 3 5 4 6) maxFace:12).
-
-
-	aTileArray := OrderedCollection new.
-	16 timesRepeat: [ aTileArray add: NullEffect new ].
-	aTileArray at: 4 put: JailEffect new .
-	
-	aGame := Game
-		         withBoard: (Board
-				          withTileEffectCollection: aTileArray
-				          withLengthInUnits: (Parsec withNominalValue: 16)
-				          withAmountOfLaps: 1)
-		         withShipNames: aCollectionOfNames
-		         withDice: (Dice with: aCollectionOfDie).
-
-	aGame playTurn.
-	aGame playTurn.
-
-	self assert: (aGame allShipsPosition at: 'Pedro')
-		equals: #( 4 1 ) asOrderedCollection.
-	self assert: (aGame allShipsPosition at: 'Juan') first equals: 7.
-	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals:2.
-	self assert: (aGame allShipAmountOfShields at: 'Juan') equals:3
-	
-	
 ]
 
 { #category : #tests }
