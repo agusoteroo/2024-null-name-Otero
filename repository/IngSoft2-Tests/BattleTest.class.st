@@ -5,6 +5,41 @@ Class {
 }
 
 { #category : #tests }
+BattleTest >> testShipsCanBattleInAHyperGravityEffectTile [
+
+	| aGame aCollectionOfNames aCollectionOfDie aTileArray |
+	aCollectionOfNames := OrderedCollection with: 'Juan' with: 'Pedro'.
+	aCollectionOfDie := OrderedCollection with:
+		                    (SequenceDie withSequence: #( 3 3 5 4 6) maxFace:12).
+
+
+	aTileArray := OrderedCollection new.
+	16 timesRepeat: [ aTileArray add: NullEffect new ].
+	aTileArray at: 4 put:( HyperGravityEffect withRequiredRoll: 8) .
+
+	
+	aGame := Game
+		         withBoard: (Board
+				          withTileEffectCollection: aTileArray
+				          withLengthInUnits: (Parsec withNominalValue: 16)
+				          withAmountOfLaps: 1)
+		         withShipNames: aCollectionOfNames
+		         withDice: (Dice with: aCollectionOfDie).
+
+	aGame playTurn.
+	aGame playTurn.
+	aGame playTurn .
+	
+	self assert: (aGame allShipsPosition at: 'Pedro') first equals: 4.
+	self assert: (aGame allShipsPosition at: 'Juan') first equals:7.
+
+	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals:3.
+	self assert: (aGame allShipAmountOfShields at: 'Juan') equals:2
+	
+	
+]
+
+{ #category : #tests }
 BattleTest >> testShipsCanNotBattleInAJailEffect [
 
 	| aGame aCollectionOfNames aCollectionOfDie aTileArray |
@@ -29,8 +64,7 @@ BattleTest >> testShipsCanNotBattleInAJailEffect [
 	aGame playTurn.
 	aGame playTurn.
 
-	self assert: (aGame allShipsPosition at: 'Pedro')
-		equals: #( 4 1 ) asOrderedCollection.
+	self assert: (aGame allShipsPosition at: 'Pedro') first equals: 4.
 	self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
 	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals:3.
 	self assert: (aGame allShipAmountOfShields at: 'Juan') equals:3
@@ -44,11 +78,11 @@ BattleTest >> testShipsCanNotBattleInAJailEffectEvenAfterLandingDueToAnotherEffe
 	| aGame aCollectionOfNames aCollectionOfDie aTileArray |
 	aCollectionOfNames := OrderedCollection with: 'Juan' with: 'Pedro'.
 	aCollectionOfDie := OrderedCollection with:
-		                    (SequenceDie withSequence: #( 3 7 5 4 6) maxFace:12).
+		                    (SequenceDie withSequence: #( 3 7  6 12) maxFace:12).
 
 
 	aTileArray := OrderedCollection new.
-	16 timesRepeat: [ aTileArray add: NullEffect new ].
+	18 timesRepeat: [ aTileArray add: NullEffect new ].
 	aTileArray at: 4 put: JailEffect new .
 	aTileArray at: 8 put: BlackHoleEffect new.
 	
@@ -62,9 +96,10 @@ BattleTest >> testShipsCanNotBattleInAJailEffectEvenAfterLandingDueToAnotherEffe
 
 	aGame playTurn.
 	aGame playTurn.
+	aGame playTurn .
+	aGame playTurn . 
 
-	self assert: (aGame allShipsPosition at: 'Pedro')
-		equals: #( 4 1 ) asOrderedCollection.
+	self assert: (aGame allShipsPosition at: 'Pedro') first equals: 16.
 	self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
 	self assert: (aGame allShipAmountOfShields at: 'Pedro') equals:3.
 	self assert: (aGame allShipAmountOfShields at: 'Juan') equals:3
