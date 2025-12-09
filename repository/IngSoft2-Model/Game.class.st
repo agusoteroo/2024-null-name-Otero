@@ -155,6 +155,11 @@ Game >> canPlayNextTurnOf [
 
 ]
 
+{ #category : #initialization }
+Game >> ensureCorrectStateFor: aShip [
+    aShip position = 1 ifTrue: [ self restartShipState: aShip ].
+]
+
 { #category : #event }
 Game >> giveCardToCurrentShip: aShip [
 
@@ -242,7 +247,7 @@ Game >> playTurn [
     diceRoll := dice throw.
     movementFromCards := gameCardHandler
         movementCardsActivated: theShipInCurrentTurn.
-
+	 self ensureCorrectStateFor: theShipInCurrentTurn.
     (self stateOfShip: theShipInCurrentTurn)
         playTurnFor: theShipInCurrentTurn
         withRoll: diceRoll
@@ -357,7 +362,7 @@ Game >> skipTurn [
 
 { #category : #initialization }
 Game >> stateOfShip: aShip [
-	aShip position = 1 ifTrue: [self restartShipState: aShip  ].
+
     ^ shipStates at: aShip
 ]
 
