@@ -1,0 +1,17 @@
+Class {
+	#name : #FreeShipState,
+	#superclass : #ShipState,
+	#category : #'IngSoft2-Model'
+}
+
+{ #category : #'as yet unclassified' }
+FreeShipState >> playTurnFor: aShip
+    withRoll: diceRoll
+    movementFromCards: movementFromCards
+    inGame: aGame [
+
+    | movement |
+    movement := diceRoll + movementFromCards.
+    aShip moveTiles: movement.
+    aGame applyMovementEffectsAndBattlesForShip: aShip
+]

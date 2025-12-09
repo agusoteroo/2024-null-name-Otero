@@ -13,7 +13,7 @@ Class {
 		'theShipInCurrentTurn',
 		'gameCardHandler',
 		'lastEffect',
-		'shipsInJail'
+		'shipStates'
 	],
 	#classInstVars : [
 		'isFinished'
@@ -100,7 +100,7 @@ Game >> applyEffectOnAllShips: anEffect [
 		gameBoard adjustShipPosition: aShip.]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #event }
 Game >> applyEffectOnAllShipsButOne: anEffect triggerByShip: aShip [
 
 	anEffect affectAllShips: gameShips but: aShip.
@@ -108,12 +108,11 @@ Game >> applyEffectOnAllShipsButOne: anEffect triggerByShip: aShip [
 		gameBoard adjustShipPosition: anAffectedShip ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #event }
 Game >> applyEffectOnOneShip: anEffect triggeredBy: aShip [
 
     anEffect affectShip: aShip inGame: self.
     gameBoard adjustShipPosition: aShip
-
 
 ]
 
@@ -123,6 +122,22 @@ Game >> applyLastEffectOn: aTarget [
 	| aShip |
 	aShip := self shipWithName: aTarget objective.
 	lastEffect applyOn: self activatedBy: aShip
+]
+
+{ #category : #event }
+Game >> applyMovementEffectsAndBattlesForShip: aShip [
+
+    self adjustShipPosition: aShip.
+    lastEffect := gameBoard
+        effectInPosition: aShip position.
+
+    gameBoard
+        applyTileEffectOn: self
+        triggeredBy: aShip.
+
+    shipBattleHandler
+        checkShipBattle: aShip
+        withCardHandler: gameCardHandler.
 ]
 
 { #category : #testing }
@@ -158,7 +173,10 @@ Game >> initializeGameWith: aBoard withShipNames: aNameCollection withDice: aDic
 	gameCardHandler := CardHandler withDeck: aDeck andGame: self.
 	theShipInCurrentTurn := gameTurnHandler currentTurnShip.
 	lastEffect := NullEffect new.
-	 shipsInJail := Set new.
+   shipStates := Dictionary new.
+
+   gameShips do: [ :ship |
+    shipStates at: ship put: FreeShipState new ].
 	gameShips do: [ :ship | gameCardHandler startingCards: ship shipName ]
 ]
 
@@ -168,9 +186,21 @@ Game >> isFinished [
 	^ gameShips anySatisfy: [ :aShip | gameBoard isInLastTile: aShip ]
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 Game >> isShipInJail: aShip [
-    ^ shipsInJail includes: aShip
+    ^ (self stateOfShip: aShip) isInJail
+]
+
+{ #category : #accessing }
+Game >> isShipTrapped: aShip [
+    ^ (self stateOfShip: aShip) isTrapped
+]
+
+{ #category : #testing }
+Game >> maxDiceRoll [
+    ^ dice maxRoll
+
+
 ]
 
 { #category : #event }
@@ -194,54 +224,42 @@ Game >> playCard: aCard by: aShipName toTarget: aTarget [
 
 { #category : #modifying }
 Game >> playTurn [
-    | diceRoll movementFromCards movement |
+    | diceRoll movementFromCards |
 
     self canPlayNextTurnOf.
 
     [ gameTurnHandler turnShipCanPlayTurn ]
         on: TurnExeption
         do: [ :ex | ^ ex messageText ].
+
     diceRoll := dice throw.
     movementFromCards := gameCardHandler
         movementCardsActivated: theShipInCurrentTurn.
-    movement := diceRoll + movementFromCards.
 
-    (self isShipInJail: theShipInCurrentTurn)
-        ifTrue: [
-            (diceRoll = dice maxRoll)
-                ifFalse: [
-                    "❌ No sale de la cárcel: no se mueve, no aplica efectos, no batalla."
-                    gameTurnHandler checkForShipsWithNoShield.
-                    gameTurnHandler nextTurn.
-                    theShipInCurrentTurn := gameTurnHandler currentTurnShip.
-                    ^ self
-                ].
-            "✅ Sale de la cárcel porque sacó tirada máxima"
-            self releaseShipFromJail: theShipInCurrentTurn
-        ].
-    theShipInCurrentTurn moveTiles: movement.
-
-    self adjustShipPosition: theShipInCurrentTurn.
-    lastEffect := gameBoard
-        effectInPosition: theShipInCurrentTurn position.
-
-    gameBoard
-        applyTileEffectOn: self
-        triggeredBy: theShipInCurrentTurn.
-
-    shipBattleHandler
-        checkShipBattle: theShipInCurrentTurn
-        withCardHandler: gameCardHandler.
+    (self stateOfShip: theShipInCurrentTurn)
+        playTurnFor: theShipInCurrentTurn
+        withRoll: diceRoll
+        movementFromCards: movementFromCards
+        inGame: self.
 
     gameTurnHandler checkForShipsWithNoShield.
     gameTurnHandler nextTurn.
-    theShipInCurrentTurn := gameTurnHandler currentTurnShip.
+    theShipInCurrentTurn := gameTurnHandler currentTurnShip
+
 
 ]
 
-{ #category : #initialization }
+{ #category : #event }
+Game >> releaseShip: aShip [
+    self setState: FreeShipState new forShip: aShip
+
+]
+
+{ #category : #event }
 Game >> releaseShipFromJail: aShip [
-    shipsInJail remove: aShip ifAbsent: [ ].
+    "Por ahora Jail y HyperGravity comparten el mismo estado libre,
+     pero semánticamente distinguimos 'liberar de Jail'."
+    self setState: FreeShipState new forShip: aShip
 ]
 
 { #category : #initialization }
@@ -257,10 +275,14 @@ Game >> reverseTurns [
     gameTurnHandler  reverseOrder
 ]
 
-{ #category : #initialization }
+{ #category : #event }
 Game >> sendShipToJail: aShip [
- 		shipsInJail add:aShip.
+    self setState: JailedShipState new forShip: aShip
+]
 
+{ #category : #initialization }
+Game >> setState: aState forShip: aShip [
+    shipStates at: aShip put: aState
 ]
 
 { #category : #accessing }
@@ -321,11 +343,24 @@ Game >> skipTurn [
 	^ skipedTurn
 ]
 
+{ #category : #initialization }
+Game >> stateOfShip: aShip [
+    ^ shipStates at: aShip
+]
+
 { #category : #validating }
 Game >> targetIsValid: aTarget [
 
 	(aTarget isValidWith: gameShips and: gameCardHandler) ifFalse: [
 		CardExeption signal: 'Target is not valid' ]
+]
+
+{ #category : #generating }
+Game >> trapShip: aShip withRequiredRoll: aNumber [
+    | state |
+    state := HyperGravityShipState withRequiredRoll: aNumber.
+    self setState: state forShip: aShip
+
 ]
 
 { #category : #accessing }

@@ -85,14 +85,22 @@ CardHandler >> freeShipInTurn [
 
 { #category : #generating }
 CardHandler >> freeShipNamed: aShipName [
-	| ship |
-	ship := game shipNamed: aShipName.
-	ship ifNil: [ ^ self ].
+    | ship |
+    ship := game shipNamed: aShipName.
+    ship ifNil: [ ^ false ].
 
-	(game isShipInJail: ship)
-		ifTrue: [ game releaseShipFromJail: ship ].
+    (game isShipInJail: ship)
+        ifTrue: [
+            game releaseShipFromJail: ship.
+            ^ true ].
 
+    ^ false
 
+]
+
+{ #category : #generating }
+CardHandler >> game [
+    ^ game
 ]
 
 { #category : #modifying }
