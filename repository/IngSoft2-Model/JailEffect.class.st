@@ -16,3 +16,8 @@ JailEffect >> affectShip: aShip inGame: aGame [
 
 	
 ]
+
+{ #category : #generators }
+JailEffect >> allowsBattles [
+    ^ false
+]
