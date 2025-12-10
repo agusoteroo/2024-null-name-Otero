@@ -7,14 +7,13 @@ Class {
 { #category : #event }
 RepeatCard >> activate: aCardHandler withTarget: aTarget [
 
-	target:= aTarget.
+	target := aTarget.
 	aCardHandler applyLastEffectOn: aTarget.
-	aCardHandler changeLastCardTo: self.
-	
+	aCardHandler changeLastCardTo: self
 ]
 
 { #category : #comparing }
 RepeatCard >> canPlayRightNow: theShipInTurn [
 
-	^true
+	^ true
 ]

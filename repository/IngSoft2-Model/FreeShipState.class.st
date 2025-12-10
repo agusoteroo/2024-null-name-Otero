@@ -8,13 +8,10 @@ Class {
 }
 
 { #category : #behavior }
-FreeShipState >> playTurnFor: aShip
-    withRoll: diceRoll
-    movementFromCards: movementFromCards
-    inGame: aGame [
+FreeShipState >> playTurnFor: aShip withRoll: diceRoll movementFromCards: movementFromCards inGame: aGame [
 
-    | movement |
-    movement := diceRoll + movementFromCards.
-    aShip moveTiles: movement.
-    aGame applyMovementEffectsAndBattlesForShip: aShip
+	| movement |
+	movement := diceRoll + movementFromCards.
+	aShip moveTiles: movement.
+	aGame applyMovementEffectsAndBattlesForShip: aShip
 ]

@@ -6,8 +6,9 @@ Class {
 
 { #category : #event }
 DoubleCard >> activate: aCardHandler withTarget: aTarget [
-    aCardHandler giveExtraTurnToCurrentShip.
-    ^ self
+
+	aCardHandler giveExtraTurnToCurrentShip.
+	^ self
 ]
 
 { #category : #comparing }

@@ -30,14 +30,14 @@ HyperGravityShipState >> isTrapped [
 
 { #category : #behavior }
 HyperGravityShipState >> playTurnFor: aShip withRoll: diceRoll movementFromCards: movementFromCards inGame: aGame [
-		self assert: requiredRoll notNil.
-    (diceRoll < requiredRoll)
-        ifTrue: [ ^ self ].  
-    aGame releaseShip: aShip.
 
-    (aGame stateOfShip: aShip)
-        playTurnFor: aShip
-        withRoll: diceRoll
-        movementFromCards: movementFromCards
-        inGame: aGame
+	self assert: requiredRoll notNil.
+	diceRoll < requiredRoll ifTrue: [ ^ self ].
+	aGame releaseShip: aShip.
+
+	(aGame stateOfShip: aShip)
+		playTurnFor: aShip
+		withRoll: diceRoll
+		movementFromCards: movementFromCards
+		inGame: aGame
 ]
