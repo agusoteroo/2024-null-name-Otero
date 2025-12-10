@@ -10,9 +10,6 @@ FreedomCard >> activate: aCardHandler withTarget: aTarget [
 	| shipToFree freed |
 	shipToFree := aTarget shipInGame: aCardHandler game.
 
-	shipToFree ifNil: [
-		CardExeption signal: 'El objetivo de Freedom no es una nave valida.' ].
-
 	freed := aCardHandler freeShipNamed: shipToFree shipName.
 
 	freed ifFalse: [
