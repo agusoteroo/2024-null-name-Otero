@@ -18,7 +18,7 @@ JailedShipState >> isTrapped [
     ^ true
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #behavior }
 JailedShipState >> playTurnFor: aShip withRoll: diceRoll movementFromCards: movementFromCards inGame: aGame [
 
     (diceRoll = aGame maxDiceRoll)
