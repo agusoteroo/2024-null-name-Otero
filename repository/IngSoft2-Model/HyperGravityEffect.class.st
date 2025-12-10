@@ -30,18 +30,18 @@ HyperGravityEffect >> affectShip: aShip inGame: aGame [
 { #category : #applying }
 HyperGravityEffect >> applyOn: aGame activatedBy: aShip [
 
-    | maxRoll |
-    maxRoll := aGame maxDiceRoll.
+	| maxRoll |
+	maxRoll := aGame maxDiceRoll.
 
-    (requiredRoll > maxRoll) ifTrue: [
-        HyperGravityException
-            signal: 'El valor X de HyperGravity (', requiredRoll printString,
-                ') no puede ser mayor que la tirada maxima (',
-                maxRoll printString, ').' ].
+	requiredRoll > maxRoll ifTrue: [
+		HyperGravityException signal:
+			'El valor X de HyperGravity (' , requiredRoll printString
+			, ') no puede ser mayor que la tirada maxima ('
+			, maxRoll printString , ').' ].
 
-    aGame trapShip: aShip withRequiredRoll: requiredRoll.
+	aGame trapShip: aShip withRequiredRoll: requiredRoll.
 
-    super applyOn: aGame activatedBy: aShip
+	super applyOn: aGame activatedBy: aShip
 ]
 
 { #category : #initialization }

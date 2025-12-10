@@ -25,32 +25,33 @@ CardsTest >> testAShipCannotBeHiredByMoreThanOneShip [
 		          withTileEffectCollection: aTileArray
 		          withLengthInUnits: (Parsec withNominalValue: 10)
 		          withAmountOfLaps: 1.
-	
+
 	aCollectionOfNames := OrderedCollection
 		                      with: 'Juan'
 		                      with: 'Jose'
 		                      with: 'Pedro'.
 	aCollectionOfDie := OrderedCollection with:
 		                    (SequenceDie withSequence: #( 7 4 4 )).
-	
+
 	collectionOfCards := OrderedCollection new.
 	10 timesRepeat: [ collectionOfCards add: MercenaryCard ].
 	aDeck := LoadedDeck withCards: collectionOfCards.
-	
+
 	aGame := Game
 		         withBoard: aBoard
 		         withShipNames: aCollectionOfNames
 		         withDice: (Dice with: aCollectionOfDie)
 		         withDeck: aDeck.
-	
+
 	aTarget := ShipTarget withObjective: 'Juan'.
-	
+
 	aGame playTurn.
-	aGame playCard: MercenaryCard by: 'Jose' toTarget: aTarget .
+	aGame playCard: MercenaryCard by: 'Jose' toTarget: aTarget.
 	aGame playTurn.
 
 	self
-		assert: (aGame playCard: MercenaryCard by: 'Pedro' toTarget: aTarget)
+		assert:
+		(aGame playCard: MercenaryCard by: 'Pedro' toTarget: aTarget)
 		equals: 'Targeted ship is already a mercenary in another coalition'.
 	self assert: (aGame shipCards: 'Pedro') size equals: 2
 ]
@@ -113,9 +114,9 @@ CardsTest >> testWhenACancelationCardIsPlayedDeactivateTargetedCard [
 
 	aTarget := CardTarget withObjective:
 		           (AccelerationCard withHolder: 'Jose').
-		
+
 	anotherTarget := AllShipsTarget new.
-	
+
 	aGame playTurn.
 	aGame playCard: AccelerationCard by: 'Jose' toTarget: anotherTarget.
 	aGame playCard: CancellationCard by: 'Juan' toTarget: aTarget.
@@ -238,11 +239,11 @@ CardsTest >> testWhenApplyingRedoCardMultipleTimesApplyLastNonRedoCard [
 		         withShipNames: aCollectionOfNames
 		         withDice: (Dice with: aCollectionOfDie)
 		         withDeck: aDeck.
-	
+
 	aTarget := ShipTarget withObjective: 'Juan'.
 	anotherTarget := ShipTarget withObjective: 'Jose'.
-	
-	
+
+
 	aGame playTurn.
 	aGame playTurn.
 	aGame playCard: SpeedCard by: 'Juan' toTarget: aTarget.

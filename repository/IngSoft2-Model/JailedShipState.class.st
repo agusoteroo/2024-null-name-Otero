@@ -21,13 +21,11 @@ JailedShipState >> isTrapped [
 { #category : #behavior }
 JailedShipState >> playTurnFor: aShip withRoll: diceRoll movementFromCards: movementFromCards inGame: aGame [
 
-    (diceRoll = aGame maxDiceRoll)
-        ifFalse: [ ^ self ]. 
-    aGame releaseShip: aShip.
-    (aGame stateOfShip: aShip)
-        playTurnFor: aShip
-        withRoll: diceRoll
-        movementFromCards: movementFromCards
-        inGame: aGame
-
+	diceRoll = aGame maxDiceRoll ifFalse: [ ^ self ].
+	aGame releaseShip: aShip.
+	(aGame stateOfShip: aShip)
+		playTurnFor: aShip
+		withRoll: diceRoll
+		movementFromCards: movementFromCards
+		inGame: aGame
 ]

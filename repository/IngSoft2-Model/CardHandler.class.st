@@ -85,17 +85,16 @@ CardHandler >> freeShipInTurn [
 
 { #category : #generating }
 CardHandler >> freeShipNamed: aShipName [
-    | ship |
-    ship := game shipNamed: aShipName.
-    ship ifNil: [ ^ false ].
 
-    (game isShipInJail: ship)
-        ifTrue: [
-            game releaseShipFromJail: ship.
-            ^ true ].
+	| ship |
+	ship := game shipNamed: aShipName.
+	ship ifNil: [ ^ false ].
 
-    ^ false
+	(game isShipInJail: ship) ifTrue: [
+		game releaseShipFromJail: ship.
+		^ true ].
 
+	^ false
 ]
 
 { #category : #accessing }
@@ -141,11 +140,10 @@ CardHandler >> lastCardPlayed [
 CardHandler >> mercenariesOf: aShip [
 
 	| mercenaryCollection |
-
 	mercenaryCollection := (coalitions select: [ :coalition |
 		                        coalition hasLeader: aShip shipName ])
 		                       collect: [ :coalition | coalition mercenary ].
-	
+
 	mercenaryCollection add: aShip shipName.
 	^ mercenaryCollection
 ]

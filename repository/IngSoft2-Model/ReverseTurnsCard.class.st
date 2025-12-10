@@ -8,7 +8,7 @@ Class {
 ReverseTurnsCard >> activate: aCardHandler withTarget: aTarget [
 
 	aCardHandler reverseTurns.
-    ^ self
+	^ self
 ]
 
 { #category : #comparing }
