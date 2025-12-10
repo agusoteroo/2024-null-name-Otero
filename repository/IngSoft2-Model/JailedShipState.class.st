@@ -7,13 +7,13 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
 JailedShipState >> isInJail [
     ^ true
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
 JailedShipState >> isTrapped [
     ^ true
 ]

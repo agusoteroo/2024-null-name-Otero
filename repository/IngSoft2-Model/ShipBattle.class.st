@@ -19,7 +19,7 @@ ShipBattle class >> withDice: aCollectionOfDice withShips: aCollectionOfShips [
 		  withDice: aCollectionOfDice
 ]
 
-{ #category : #initialization }
+{ #category : #event }
 ShipBattle >> checkShipBattle: currentTurnShip withCardHandler: gameCardHandler [
 
 	| shipsInSamePosition |

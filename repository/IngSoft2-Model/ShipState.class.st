@@ -7,19 +7,19 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
 ShipState >> isInJail [
     ^ false
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
 ShipState >> isTrapped [
     ^ false
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #behavior }
 ShipState >> playTurnFor: aShip withRoll: diceRoll movementFromCards: movementFromCards inGame: aGame [
 
     ^ self subclassResponsibility

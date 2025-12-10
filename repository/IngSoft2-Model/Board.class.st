@@ -87,7 +87,7 @@ Board >> applyTileEffectOn: aGame triggeredBy: aShip [
 		activatedBy: aShip
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 Board >> effectInPosition: aPosition [
 
 	^ tileEffectArray at: aPosition
