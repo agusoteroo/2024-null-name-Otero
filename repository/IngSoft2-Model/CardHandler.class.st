@@ -98,7 +98,7 @@ CardHandler >> freeShipNamed: aShipName [
 
 ]
 
-{ #category : #generating }
+{ #category : #accessing }
 CardHandler >> game [
     ^ game
 ]
@@ -137,7 +137,7 @@ CardHandler >> lastCardPlayed [
 	^ lastCardPlayed
 ]
 
-{ #category : #comparing }
+{ #category : #accessing }
 CardHandler >> mercenariesOf: aShip [
 
 	| mercenaryCollection |

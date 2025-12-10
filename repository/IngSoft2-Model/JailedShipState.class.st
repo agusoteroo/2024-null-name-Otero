@@ -7,18 +7,18 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
 JailedShipState >> isInJail [
     ^ true
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
 JailedShipState >> isTrapped [
     ^ true
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #behavior }
 JailedShipState >> playTurnFor: aShip withRoll: diceRoll movementFromCards: movementFromCards inGame: aGame [
 
     (diceRoll = aGame maxDiceRoll)

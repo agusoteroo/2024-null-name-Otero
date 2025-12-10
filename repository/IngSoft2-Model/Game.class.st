@@ -154,7 +154,7 @@ Game >> canPlayNextTurnOf [
 
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 Game >> ensureCorrectStateFor: aShip [
     aShip position = 1 ifTrue: [ self restartShipState: aShip ].
 ]

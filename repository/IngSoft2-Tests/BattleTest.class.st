@@ -1,3 +1,6 @@
+"
+This is a test class
+"
 Class {
 	#name : #BattleTest,
 	#superclass : #TestCase,

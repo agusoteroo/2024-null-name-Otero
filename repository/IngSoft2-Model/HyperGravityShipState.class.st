@@ -23,12 +23,12 @@ HyperGravityShipState >> initializeWithRequiredRoll: aNumber [
         requiredRoll := aNumber
 ]
 
-{ #category : #initialization }
+{ #category : #testing }
 HyperGravityShipState >> isTrapped [
     ^ true
 ]
 
-{ #category : #initialization }
+{ #category : #behavior }
 HyperGravityShipState >> playTurnFor: aShip withRoll: diceRoll movementFromCards: movementFromCards inGame: aGame [
 		self assert: requiredRoll notNil.
     (diceRoll < requiredRoll)

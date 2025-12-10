@@ -99,6 +99,102 @@ EffectsTest >> testMoonWalkDistanceCannotBeSmallerThanZero [
 ]
 
 { #category : #tests }
+EffectsTest >> testRepeatOnHyperGravityTrapsTargetShipInCurrentTile [ 
+
+	| aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray collectionOfCards aDeck aTarget |
+	aTileArray := OrderedCollection new.
+	10 timesRepeat: [ aTileArray add: NullEffect new ].
+
+	aTileArray at: 3 put: (HyperGravityEffect withRequiredRoll: 4).
+
+	aBoard := Board
+		          withTileEffectCollection: aTileArray
+		          withLengthInUnits: (Parsec withNominalValue: 10)
+		          withAmountOfLaps: 1.
+	aCollectionOfNames := OrderedCollection with: 'Juan' with: 'Jose'.
+	aCollectionOfDie := OrderedCollection with:
+		                    (SequenceDie withSequence: #( 3 2 1 4 4) maxFace: 12).
+
+	collectionOfCards := OrderedCollection new.
+	10 timesRepeat: [ collectionOfCards add: RepeatCard ].
+	aDeck := LoadedDeck withCards: collectionOfCards.
+
+	aGame := Game
+		         withBoard: aBoard
+		         withShipNames: aCollectionOfNames
+		         withDice: (Dice with: aCollectionOfDie)
+		         withDeck: aDeck.
+	
+	aTarget := ShipTarget withObjective: 'Juan'.
+	
+	aGame playTurn.
+	aGame playTurn .
+	aGame playCard: RepeatCard by: 'Jose' toTarget: aTarget .
+
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+	self assert: (aGame allShipsPosition at: 'Jose') first equals: 3.
+	
+	aGame playTurn .
+	aGame playTurn.
+	
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+	self assert: (aGame allShipsPosition at: 'Jose') first equals: 7.
+	
+	aGame playTurn .
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 8.
+	
+	
+]
+
+{ #category : #tests }
+EffectsTest >> testRepeatOnJailTrapsTargetShipInCurrentTile [ 
+
+	| aGame aBoard aCollectionOfNames aCollectionOfDie aTileArray collectionOfCards aDeck aTarget |
+	aTileArray := OrderedCollection new.
+	10 timesRepeat: [ aTileArray add: NullEffect new ].
+
+	aTileArray at: 3 put: (JailEffect new).
+
+	aBoard := Board
+		          withTileEffectCollection: aTileArray
+		          withLengthInUnits: (Parsec withNominalValue: 10)
+		          withAmountOfLaps: 1.
+	aCollectionOfNames := OrderedCollection with: 'Juan' with: 'Jose'.
+	aCollectionOfDie := OrderedCollection with:
+		                    (SequenceDie withSequence: #( 3 2 1 4 4) maxFace: 4).
+
+	collectionOfCards := OrderedCollection new.
+	10 timesRepeat: [ collectionOfCards add: RepeatCard ].
+	aDeck := LoadedDeck withCards: collectionOfCards.
+
+	aGame := Game
+		         withBoard: aBoard
+		         withShipNames: aCollectionOfNames
+		         withDice: (Dice with: aCollectionOfDie)
+		         withDeck: aDeck.
+	
+	aTarget := ShipTarget withObjective: 'Juan'.
+	
+	aGame playTurn.
+	aGame playTurn .
+	aGame playCard: RepeatCard by: 'Jose' toTarget: aTarget .
+
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+	self assert: (aGame allShipsPosition at: 'Jose') first equals: 3.
+	
+	aGame playTurn .
+	aGame playTurn.
+	
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 4.
+	self assert: (aGame allShipsPosition at: 'Jose') first equals: 7.
+	
+	aGame playTurn .
+	self assert: (aGame allShipsPosition at: 'Juan') first equals: 8.
+	
+	
+]
+
+{ #category : #tests }
 EffectsTest >> testShipInHyperGravityStaysUntilReachingRequiredRoll [
 
     | aBoard aShipNames aGame aTileArray  |

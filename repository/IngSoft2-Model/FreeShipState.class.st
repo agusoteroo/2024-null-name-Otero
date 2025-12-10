@@ -7,7 +7,7 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #behavior }
 FreeShipState >> playTurnFor: aShip
     withRoll: diceRoll
     movementFromCards: movementFromCards
